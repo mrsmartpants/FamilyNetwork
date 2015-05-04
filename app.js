@@ -8,11 +8,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
-var Sequelize = require('sequelize');
 var config = require('./config/environment');
-
-// Connect to database
-
 
 
 // Populate DB with sample data
@@ -22,7 +18,13 @@ var config = require('./config/environment');
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
-require('./routes')(app);
+
+//Bootstrap the routes, controllers and models
+require('./app/routes')(app);
+require('./app/controllers')(app);
+require('./app/models')(app);
+
+
 
 // Start server
 server.listen(config.port, config.ip, function () {
