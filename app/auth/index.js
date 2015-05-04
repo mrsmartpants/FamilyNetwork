@@ -2,8 +2,8 @@
 
 var express = require('express');
 var passport = require('passport');
-var config = require('../config/environment');
-//var User = require('../api/user/user.model');
+var config = require('../../config/environment');
+var User = require('../models').User;
 //TODO: implement user SQL model
 
 // Passport Configuration

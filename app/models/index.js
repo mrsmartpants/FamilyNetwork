@@ -1,26 +1,25 @@
 var Sequelize = require('sequelize');
-var config    = require('./../../config/environment');
+var config = require('./../../config/environment');
 
-module.exports = function(app) {
 // initialize database connection
-  var sequelize = new Sequelize(
-    config.sequelize.name,
-    config.sequelize.user,
-    config.sequelize.password,
-    config.sequelize.options
-  );
+var sequelize = new Sequelize(
+  config.sequelize.name,
+  config.sequelize.user,
+  config.sequelize.password,
+  config.sequelize.options
+);
+
 
 // load models
-  var models = [
-    'User'
-  ];
-  models.forEach(function (model) {
-    module.exports[model] = sequelize.import(__dirname + '/' + model);
-  });
+var models = [
+  'User'
+];
+models.forEach(function (model) {
+  module.exports[model] = sequelize.import(__dirname + '/' + model);
+});
 
 // describe relationships
-  (function (m) {
-  })(module.exports);
+(function (m) {
+})(module.exports);
 
-  app.set('models', sequelize);
-};
+module.exports.sequelize = sequelize;

@@ -9,8 +9,9 @@ module.exports = {
     password: 'root',
 
     options: {
-      host: 'localhost:8889',
+      host: 'localhost',
       dialect: 'mysql',
+      port: '8889',
       pool: {
         max: 5,
         min: 0,
