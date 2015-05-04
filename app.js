@@ -8,11 +8,11 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
-var mysql = require('mysql');
+var Sequelize = require('sequelize');
 var config = require('./config/environment');
 
 // Connect to database
-mysql.createConnection(config.mysql.options);
+
 
 
 // Populate DB with sample data

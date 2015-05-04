@@ -1,12 +1,12 @@
 'use strict';
 
-var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var User = require('../api/user/user.model');
+//var User = require('../api/user/user.model');
+//TODO: implement user SQL model
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 /**
@@ -25,6 +25,7 @@ function isAuthenticated() {
     })
     // Attach user to request
     .use(function(req, res, next) {
+      //TODO: implement user attachment
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
         if (!user) return res.send(401);
