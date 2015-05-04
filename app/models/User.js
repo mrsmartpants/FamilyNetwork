@@ -1,4 +1,5 @@
-var authService = require('../services/auth');
+var authService = require('../services/authorization');
+var config = require('../../config/environment');
 
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('User', {
@@ -18,12 +19,15 @@ module.exports = function (sequelize, DataTypes) {
         }
       },
       role: {
-        type: DataTypes.STRING,
-        defaultValue: 'user'
+        type: DataTypes.ENUM,
+        defaultValue: 'user',
+        values: config.userRoles
       },
       hashedPassword: DataTypes.STRING,
       provider: DataTypes.STRING,
       salt: DataTypes.STRING,
+
+      //Virtuals
       password: {
         type: DataTypes.VIRTUAL,
         set: function (password) {
@@ -38,11 +42,34 @@ module.exports = function (sequelize, DataTypes) {
         //    }
         //  }
         //}
+      },
+      profile: {
+        type: DataTypes.VIRTUAL,
+        get: function () {
+          return {
+            id: this.getDataValue('id'),
+            name: this.getDataValue('firstName') + ' ' + this.getDataValue('lastName'),
+            role: this.getDataValue('role')
+          }
+        }
       }
     },
     {
       freezeTableName: true,
-      timestamps: true
+      timestamps: true,
+      instanceMethods: {
+
+        /**
+         * Authenticate - check if the passwords are the same
+         *
+         * @param {String} password
+         * @return {Boolean}
+         * @api public
+         */
+        authenticate: function(password) {
+          return authService.encryptPassword(password, this.getDataValue('salt')) === this.hashedPassword;
+        }
+      }
     }
   );
 };

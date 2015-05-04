@@ -5,6 +5,12 @@
 
 'use strict';
 //
+/**
+ * Description
+ * @method exports
+ * @param {} app
+ * @return 
+ */
 module.exports = function (app) {
   var models = app.get('models');
   var User = models.User;

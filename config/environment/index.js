@@ -3,6 +3,12 @@
 var path = require('path');
 var _ = require('lodash');
 
+/**
+ * Description
+ * @method requiredProcessEnv
+ * @param {} name
+ * @return MemberExpression
+ */
 function requiredProcessEnv(name) {
   if(!process.env[name]) {
     throw new Error('You must set the ' + name + ' environment variable');
@@ -26,7 +32,7 @@ var all = {
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
-    session: 'family-network-secret'
+    session: 'secret'
   },
 
   // List of user roles

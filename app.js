@@ -26,6 +26,9 @@ app.set('models', require('./app/models'));
 // Populate DB with sample data
 if(config.seedDB) { require('./config/seed')(app); }
 
+//Integrate passport into the app
+require('./config/passport')(app, config);
+
 // Start server
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
