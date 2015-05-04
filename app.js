@@ -11,8 +11,7 @@ var express = require('express');
 var config = require('./config/environment');
 
 
-// Populate DB with sample data
-//if(config.seedDB) { require('./config/seed'); }
+
 
 // Setup server
 var app = express();
@@ -22,9 +21,10 @@ require('./config/express')(app);
 //Bootstrap the routes, controllers and models
 require('./app/routes')(app);
 require('./app/controllers')(app);
-require('./app/models')(app);
+app.set('models', require('./app/models'));
 
-
+// Populate DB with sample data
+if(config.seedDB) { require('./config/seed')(app); }
 
 // Start server
 server.listen(config.port, config.ip, function () {
