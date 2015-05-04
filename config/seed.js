@@ -5,26 +5,27 @@
 
 'use strict';
 //
-module.exports = function(app) {
+module.exports = function (app) {
   var models = app.get('models');
   var User = models.User;
 
   models.sequelize.sync({force: true})
-    .then(function() {
+    .then(function () {
       User
-        .create({
+        .bulkCreate([{
           provider: 'local',
           firstName: 'Ethan',
           lastName: 'Veres',
           email: 'ethanveres@gmail.com',
           password: 'test'
-        })
-        .then(function (user) {
-          // success! do something with user
-          //console.log(user);
-        })
-        .catch(function (reason) {
-          // failure!
-        });
+        },
+          {
+            provider: 'local',
+            firstName: 'test',
+            lastName: 'test',
+            email: 'test@test.com',
+            password: 'test'
+          }
+        ]);
     });
 };

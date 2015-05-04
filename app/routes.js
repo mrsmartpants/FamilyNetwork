@@ -14,12 +14,9 @@ module.exports = function(app) {
   app.use('/auth', require('./auth/index'));
 
   app.use('/user', function(req, res) {
-    app.get('models').User.find({
-      where: {
-        firstName: 'Ethan'
-      }})
-      .then(function(user) {
-        res.json(user);
+    app.get('models').User.findAll()
+      .then(function(users) {
+        res.json(users);
       });
   });
 
