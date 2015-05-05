@@ -20,7 +20,6 @@ require('./config/express')(app);
 
 //Bootstrap the routes, controllers and models
 require('./app/routes')(app);
-require('./app/controllers')(app);
 app.set('models', require('./app/models'));
 
 // Populate DB with sample data
