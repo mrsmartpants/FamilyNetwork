@@ -4,12 +4,15 @@ node_js:
   - '0.11'
   - '0.12'
 before_script:
- - mysql -e 'create database familynetwork-test;'
   - npm install -g gulp
-script: gulp test
+  - mysql -e 'create database `familynetwork-test`;'
+script: gulp test:travis
+cache:
+  directories:
+    - node_modules
 notifications:
   email:
     recipients:
       - ethanveres@gmail.com
-    on_success: change
+    on_success: always
     on_failure: always

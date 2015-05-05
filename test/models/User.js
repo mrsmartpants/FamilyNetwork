@@ -3,6 +3,7 @@
 var should = require('should');
 var app = require('../../app');
 var User = require('../../app/models').User;
+var Sequelize = require('../../app/models').sequelize;
 
 
 var userObject = {
@@ -30,6 +31,11 @@ describe('User Model', function () {
       .then(function () {
         done();
       });
+  });
+
+  after(function (done) {
+    Sequelize.close();
+    done();
   });
 
   it('should begin with no users', function (done) {
