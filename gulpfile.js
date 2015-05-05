@@ -12,11 +12,9 @@ gulp.task('help', taskListing.withFilters(/:/));
 gulp.task('test', ['test:lint', 'test:mocha']);
 
 gulp.task('test:lint', function () {
-  return gulp.src(['./app/*.js', 'app.js'])
+  return gulp.src(['./app/**/*.js', 'app.js'])
     .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'))
-    .on('error', gutil.log);
+    .pipe(jshint.reporter('jshint-stylish'));
 
 });
 
@@ -39,7 +37,10 @@ gulp.task('serve', ['debug'], function () {
       setTimeout(function () {
         require('open')('http://localhost:8080/debug?port=5858');
       }, 500);
-    });
+    })
+    .on('restart', function() {
+      gulp.start('test:lint');
+    })
 });
 
 gulp.task('debug', function () {
