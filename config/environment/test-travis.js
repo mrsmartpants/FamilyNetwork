@@ -5,9 +5,7 @@
 module.exports = {
   sequelize: {
     name: 'familynetwork-test',
-    user: 'root',
-    password: 'root',
-
+    user: 'travis',
     options: {
       host: '127.0.0.1',
       dialect: 'mysql',
