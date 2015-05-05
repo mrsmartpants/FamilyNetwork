@@ -12,6 +12,7 @@ module.exports = {
       host: 'localhost',
       dialect: 'mysql',
       port: '8889',
+      logging: false,
       pool: {
         max: 5,
         min: 0,
