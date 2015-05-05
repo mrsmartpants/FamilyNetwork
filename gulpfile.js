@@ -9,23 +9,34 @@ var nodeInspector = require('gulp-node-inspector');
 //Prints a help screen of all available tasks
 gulp.task('help', taskListing.withFilters(/:/));
 
+//Testing tasks
 gulp.task('test', ['test:lint', 'test:mocha']);
 
+gulp.task('test:mocha', function () {
+  //set the NODE_ENV to test
+  process.env.NODE_ENV = 'test';
+
+  return gulp.src(['test/**/*.js'], {read: false})
+    .pipe(mocha({reporter: 'spec'}));
+});
+
 gulp.task('test:lint', function () {
+  return gulp.src('./test/**/*.js')
+    .pipe(jshint('.jshintrc-spec'))
+    .pipe(jshint.reporter('jshint-stylish'));
+
+});
+
+gulp.task('lint', function () {
   return gulp.src(['./app/**/*.js', 'app.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 
 });
 
-gulp.task('test:mocha', function () {
-  return gulp.src(['test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'spec'}))
-    .on('error', gutil.log);
-});
 
-
-gulp.task('serve', ['debug'], function () {
+//Server tasks
+gulp.task('serve', ['serve:debug'], function () {
   nodemon({
     script: 'app.js',
     nodeArgs: ['--debug-brk'],
@@ -38,12 +49,12 @@ gulp.task('serve', ['debug'], function () {
         require('open')('http://localhost:8080/debug?port=5858');
       }, 500);
     })
-    .on('restart', function() {
+    .on('restart', function () {
       gulp.start('test:lint');
     })
 });
 
-gulp.task('debug', function () {
+gulp.task('serve:debug', function () {
   gulp.src([])
     .pipe(nodeInspector({
       'web-host': 'localhost'
@@ -51,4 +62,4 @@ gulp.task('debug', function () {
 });
 
 
-gulp.task('default', ['test', 'serve']);
+gulp.task('default', ['lint', 'serve']);
