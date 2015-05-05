@@ -29,6 +29,19 @@
     "sequelize": "^2.1.0"
   },
   "devDependencies": {
-    "jsdoc": "^3.3.0-beta3"
+    "gulp": "^3.8.11",
+    "gulp-complexity": "^0.3.0",
+    "gulp-jshint": "^1.10.0",
+    "gulp-jsinspect": "0.0.0",
+    "gulp-mocha": "^2.0.1",
+    "gulp-node-inspector": "0.0.3",
+    "gulp-nodemon": "^2.0.3",
+    "gulp-task-listing": "^1.0.0",
+    "gulp-util": "^3.0.4",
+    "jsdoc": "^3.3.0-beta3",
+    "jshint-stylish": "^1.0.2",
+    "open": "0.0.5",
+    "should": "^6.0.1",
+    "supertest": "^0.15.0"
   }
 }
