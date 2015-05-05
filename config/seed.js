@@ -1,15 +1,10 @@
+'use strict';
+
 /**
  * Populate DB with sample data on server start
  * to disable, edit config/environment/index.js, and set `seedDB: false`
- */
-
-'use strict';
-//
-/**
- * Description
  * @method exports
- * @param {} app
- * @return 
+ * @param {object} app the Express app object
  */
 module.exports = function (app) {
   var models = app.get('models');

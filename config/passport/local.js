@@ -8,11 +8,11 @@ var auth = require('../../app/services/authorization');
 
 
 /**
- * Expose
+ * Expose and use the local passport strategy
  * @method setup
- * @param {} User
- * @param {} config
- * @return 
+ * @param {object} User the user model
+ * @param {object} config the config
+ * @return {object} the done callback
  */
 exports.setup = function (User, config) {
   passport.use(new LocalStrategy({
@@ -41,10 +41,10 @@ exports.setup = function (User, config) {
 };
 
 /**
- * Description
+ * Load the local strategy into a route
  * @method load
- * @param {} router
- * @return router
+ * @param {object} router
+ * @return {object} the express router object
  */
 exports.load = function(router) {
   router.post('/', function(req, res, next) {

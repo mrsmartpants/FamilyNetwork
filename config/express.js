@@ -1,5 +1,5 @@
 /**
- * Express configuration
+ * Main Express configuration
  */
 
 'use strict';
@@ -15,10 +15,9 @@ var passport = require('passport');
 var config = require('./environment/index');
 
 /**
- * Description
+ * Exports the Express app configuration
  * @method exports
- * @param {} app
- * @return 
+ * @param {object} app the Express app object
  */
 module.exports = function(app) {
   var env = app.get('env');

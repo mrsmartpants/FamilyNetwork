@@ -1,6 +1,12 @@
 var authService = require('../services/authorization');
 var config = require('../../config/environment');
 
+/**
+ * Exposes the user model
+ * @method exports
+ * @param {object} sequelize
+ * @param {object} DataTypes
+ */
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('User', {
       id: {
@@ -30,6 +36,14 @@ module.exports = function (sequelize, DataTypes) {
       //Virtuals
       password: {
         type: DataTypes.VIRTUAL,
+        /**
+         * Setter method for the virtual password column
+         * of the User database/model. When a user instance is saved
+         * the unencrypted password is taken to this method and
+         * saves the hashed password and salt to the database
+         * @method set
+         * @param {String} password
+         */
         set: function (password) {
           this.setDataValue('password', password);
           this.setDataValue('salt', authService.makeSalt());
@@ -45,6 +59,12 @@ module.exports = function (sequelize, DataTypes) {
       },
       profile: {
         type: DataTypes.VIRTUAL,
+        /**
+         * Getter method for the virtual profile column
+         * of the User database/model
+         * @method get
+         * @return {object} profile - the user's public profile
+         */
         get: function () {
           return {
             id: this.getDataValue('id'),
@@ -61,10 +81,9 @@ module.exports = function (sequelize, DataTypes) {
 
         /**
          * Authenticate - check if the passwords are the same
-         *
+         * @method authenticate
          * @param {String} password
-         * @return {Boolean}
-         * @api public
+         * @return {Boolean} expression true if given password is the user's
          */
         authenticate: function(password) {
           return authService.encryptPassword(password, this.getDataValue('salt')) === this.hashedPassword;

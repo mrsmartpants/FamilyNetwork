@@ -1,16 +1,12 @@
-/**
- * Main application routes
- */
-
 'use strict';
 
 var errors = require('./../components/errors/index');
 
 /**
- * Description
+ * Main application routes
+ * Expose all the routes for the application
  * @method exports
- * @param {} app
- * @return 
+ * @param {object} app the Express app object
  */
 module.exports = function(app) {
 

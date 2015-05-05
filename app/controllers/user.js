@@ -1,12 +1,19 @@
 'use strict';
 
 var User = require('../models').User;
-var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var getAttributes = ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'updatedAt'];
 
+/**
+ * Sends a json validation error
+ * @callback validationError
+ * @access private
+ * @param {object} res the response object
+ * @param {String} err
+ * @return error - the validation error
+ */
 var validationError = function (res, err) {
   return res.json(422, err);
 };
@@ -14,6 +21,10 @@ var validationError = function (res, err) {
 /**
  * Get list of users
  * restriction: 'admin'
+ * @method index
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @return the response
  */
 exports.index = function (req, res) {
   User.findAll({attributes: getAttributes})
@@ -27,6 +38,11 @@ exports.index = function (req, res) {
 
 /**
  * Creates a new user
+ * @method create
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - the next callback
+ * @return {validationError}
  */
 exports.create = function (req, res, next) {
   var newUser = User.build(req.body);
@@ -44,6 +60,11 @@ exports.create = function (req, res, next) {
 
 /**
  * Get a single user
+ * @method show
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - the next callback
+ * @return {object} next callback
  */
 exports.show = function (req, res, next) {
   var userId = req.params.id;
@@ -61,6 +82,10 @@ exports.show = function (req, res, next) {
 /**
  * Deletes a user
  * restriction: 'admin'
+ * @method destroy
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @return response
  */
 exports.destroy = function (req, res) {
   User.destroy({where: {id: req.params.id}})
@@ -74,6 +99,11 @@ exports.destroy = function (req, res) {
 
 /**
  * Change a users password
+ * @method changePassword
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - the next callback
+ * @return {validationError}
  */
 exports.changePassword = function (req, res, next) {
   var userId = req.user.id;
@@ -103,6 +133,11 @@ exports.changePassword = function (req, res, next) {
 
 /**
  * Get my info
+ * @method me
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - the next callback
+ * @return response
  */
 exports.me = function (req, res, next) {
   var userId = req.user.id;
@@ -121,6 +156,10 @@ exports.me = function (req, res, next) {
 
 /**
  * Authentication callback
+ * @callback authCallback
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - the next callback
  */
 exports.authCallback = function (req, res, next) {
   res.redirect('/');

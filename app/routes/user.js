@@ -1,5 +1,7 @@
 'use strict';
 
+//The routes for the user api
+
 var express = require('express');
 var controller = require('../controllers/user');
 var config = require('../../config/environment');
