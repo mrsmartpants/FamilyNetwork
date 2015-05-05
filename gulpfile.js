@@ -5,6 +5,7 @@ var gutil = require('gulp-util');
 var nodemon = require('gulp-nodemon');
 var taskListing = require('gulp-task-listing');
 var nodeInspector = require('gulp-node-inspector');
+var istanbul = require('gulp-istanbul');
 
 //Prints a help screen of all available tasks
 gulp.task('help', taskListing.withFilters(/:/));
@@ -16,13 +17,19 @@ gulp.task('test:mocha', function () {
   //set the NODE_ENV to test
   process.env.NODE_ENV = 'test';
 
-  return gulp.src(['test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'spec'}))
-    .once('error', function () {
-      process.exit(1);
-    })
-    .once('end', function () {
-      process.exit();
+  return gulp.src(['app/**/*.js', 'app.js'])
+    .pipe(istanbul()) // Covering files
+    .pipe(istanbul.hookRequire()) // Force `require` to return covered files
+    .on('finish', function () {
+      return gulp.src('./test/**/*.js')
+        .pipe(mocha({reporter: 'spec'}))
+        .pipe(istanbul.writeReports())
+        .once('error', function () {
+          process.exit(1);
+        })
+        .once('end', function () {
+          process.exit();
+        });
     });
 });
 
