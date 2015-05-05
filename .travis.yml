@@ -6,7 +6,7 @@ node_js:
 before_script:
   - npm install -g gulp
   - mysql -e 'create database `familynetwork-test`;'
-script: gulp test
+script: gulp test:travis
 notifications:
   email:
     recipients:

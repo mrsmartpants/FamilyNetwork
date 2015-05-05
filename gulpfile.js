@@ -20,6 +20,14 @@ gulp.task('test:mocha', function () {
     .pipe(mocha({reporter: 'spec'}));
 });
 
+gulp.task('test:travis', function () {
+  //set the NODE_ENV to test
+  process.env.NODE_ENV = 'test-travis';
+
+  return gulp.src(['test/**/*.js'], {read: false})
+    .pipe(mocha({reporter: 'spec'}));
+});
+
 gulp.task('test:lint', function () {
   return gulp.src('./test/**/*.js')
     .pipe(jshint('.jshintrc-spec'))
