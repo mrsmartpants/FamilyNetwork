@@ -17,7 +17,13 @@ gulp.task('test:mocha', function () {
   process.env.NODE_ENV = 'test';
 
   return gulp.src(['test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'spec'}));
+    .pipe(mocha({reporter: 'spec'}))
+    .once('error', function () {
+      process.exit(1);
+    })
+    .once('end', function () {
+      process.exit();
+    });
 });
 
 gulp.task('test:travis', function () {
@@ -25,7 +31,13 @@ gulp.task('test:travis', function () {
   process.env.NODE_ENV = 'test-travis';
 
   return gulp.src(['test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'spec'}));
+    .pipe(mocha({reporter: 'spec'}))
+    .once('error', function () {
+      process.exit(1);
+    })
+    .once('end', function () {
+      process.exit();
+    });
 });
 
 gulp.task('test:lint', function () {
