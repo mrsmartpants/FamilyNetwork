@@ -5,7 +5,7 @@ node_js:
   - '0.12'
 before_script:
  - mysql -e 'create database familynetwork-test;'
-  - npm install -g gulp
+ - npm install -g gulp
 script: gulp test
 notifications:
   email:
