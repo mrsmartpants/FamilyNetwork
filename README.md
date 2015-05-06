@@ -1,6 +1,6 @@
-# Family Network
+# Family Network ![Build Status](https://travis-ci.org/ethanve/FamilyNetwork.svg?branch=master)
 
-The Node API for a family social network ![Build Status](https://travis-ci.org/ethanve/FamilyNetwork.svg?branch=master)
+The Node API for a family social network 
 
 
 ## Pre-requisites
