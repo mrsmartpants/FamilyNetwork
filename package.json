@@ -43,6 +43,7 @@
     "jsdoc": "^3.3.0-beta3",
     "jshint-stylish": "^1.0.2",
     "open": "0.0.5",
+    "sequelize-cli": "^1.7.0",
     "should": "^6.0.1",
     "supertest": "^0.15.0"
   }
