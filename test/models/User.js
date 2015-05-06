@@ -2,8 +2,9 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('../../app/models').User;
-var Sequelize = require('../../app/models').sequelize;
+var models = require('../../app/models');
+var User = models.User;
+var Sequelize = models.sequelize;
 
 
 var userObject = {

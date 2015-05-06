@@ -1,25 +1,39 @@
 var Sequelize = require('sequelize');
-var config = require('./../../config/environment');
+var env = process.env.NODE_ENV || 'development';
+var config = require('./../../config/database.json')[env];
+var fs = require('fs');
+var path = require('path');
+var basename = path.basename(module.filename);
+var db = {};
 
 // initialize database connection
 var sequelize = new Sequelize(
-  config.sequelize.name,
-  config.sequelize.user,
-  config.sequelize.password,
-  config.sequelize.options
+  config.database,
+  config.username,
+  config.password,
+  config
 );
 
 
 // load models
-var models = [
-  'User'
-];
-models.forEach(function (model) {
-  module.exports[model] = sequelize.import(__dirname + '/' + model);
+
+fs
+  .readdirSync(__dirname)
+  .filter(function (file) {
+    return (file.indexOf('.') !== 0) && (file !== basename);
+  })
+  .forEach(function (file) {
+    var model = sequelize['import'](path.join(__dirname, file));
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach(function (modelName) {
+  if ('associate' in db[modelName]) {
+    db[modelName].associate(db);
+  }
 });
 
-// describe relationships
-(function (m) {
-})(module.exports);
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-module.exports.sequelize = sequelize;
+module.exports = db;

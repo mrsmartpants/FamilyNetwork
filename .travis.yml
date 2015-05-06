@@ -5,8 +5,8 @@ node_js:
   - '0.12'
 before_script:
   - npm install -g gulp
-  - mysql -e 'create database `familynetwork-test`;'
-script: gulp test:travis
+  - mysql -e 'create database `familynetwork_test`;'
+script: gulp test
 cache:
   directories:
     - node_modules
