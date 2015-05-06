@@ -33,20 +33,6 @@ gulp.task('test:mocha', function () {
     });
 });
 
-gulp.task('test:travis', function () {
-  //set the NODE_ENV to test
-  process.env.NODE_ENV = 'test-travis';
-
-  return gulp.src(['test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'spec'}))
-    .once('error', function () {
-      process.exit(1);
-    })
-    .once('end', function () {
-      process.exit();
-    });
-});
-
 gulp.task('test:lint', function () {
   return gulp.src('./test/**/*.js')
     .pipe(jshint('.jshintrc-spec'))
