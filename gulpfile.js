@@ -17,20 +17,23 @@ gulp.task('test:mocha', function () {
   //set the NODE_ENV to test
   process.env.NODE_ENV = 'test';
 
+  //On end callback
+  function onEnd() {
+    return gulp.src('./test/**/*.js')
+      .pipe(mocha({reporter: 'spec'}))
+      .pipe(istanbul.writeReports())
+      .once('error', function () {
+        process.exit(1);
+      })
+      .once('end', function () {
+        process.exit();
+      });
+  }
+
   return gulp.src(['app/**/*.js', 'app.js'])
     .pipe(istanbul()) // Covering files
     .pipe(istanbul.hookRequire()) // Force `require` to return covered files
-    .on('finish', function () {
-      return gulp.src('./test/**/*.js')
-        .pipe(mocha({reporter: 'spec'}))
-        .pipe(istanbul.writeReports())
-        .once('error', function () {
-          process.exit(1);
-        })
-        .once('end', function () {
-          process.exit();
-        });
-    });
+    .on('finish', onEnd);
 });
 
 gulp.task('test:lint', function () {
