@@ -23,11 +23,10 @@
     "lodash": "^3.8.0",
     "method-override": "^2.3.2",
     "morgan": "^1.5.2",
-    "mysql": "^2.6.2",
+    "mongoose": "3.8.17",
     "passport": "^0.2.1",
     "passport-facebook": "^2.0.0",
-    "passport-local": "^1.0.0",
-    "sequelize": "^2.1.0"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
@@ -43,7 +42,6 @@
     "jsdoc": "^3.3.0-beta3",
     "jshint-stylish": "^1.0.2",
     "open": "0.0.5",
-    "sequelize-cli": "^1.7.0",
     "should": "^6.0.1",
     "supertest": "^0.15.0"
   }

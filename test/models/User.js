@@ -2,80 +2,59 @@
 
 var should = require('should');
 var app = require('../../app');
-var models = require('../../app/models');
-var User = models.User;
-var Sequelize = models.sequelize;
+var User = require('../../app/models/user');
 
-
-var userObject = {
+var user = new User({
   provider: 'local',
-  firstName: 'Fake',
-  lastName: 'User',
-  email: 'fakeuser@email.com',
+  name: 'Fake User',
+  email: 'test@test.com',
   password: 'password'
-};
+});
 
-var testUser = User.build(userObject);
-
-
-describe('User Model', function () {
-  before(function (done) {
+describe('User Model', function() {
+  before(function(done) {
     // Clear users before testing
-    User.sync({force: true})
-      .then(function () {
-        done();
-      });
+    User.remove().exec().then(function() {
+      done();
+    });
   });
 
-  afterEach(function (done) {
-    User.sync({force: true})
-      .then(function () {
-        done();
-      });
+  afterEach(function(done) {
+    User.remove().exec().then(function() {
+      done();
+    });
   });
 
-  after(function (done) {
-    Sequelize.close();
-    done();
+  it('should begin with no users', function(done) {
+    User.find({}, function(err, users) {
+      users.should.have.length(0);
+      done();
+    });
   });
 
-  it('should begin with no users', function (done) {
-    User.findAll()
-      .then(function (users) {
-        users.should.have.length(0);
-        done();
-      })
-      .catch(function (err) {
-        done()
-      });
-  });
-
-  it('should fail when saving a duplicate user', function (done) {
-    testUser.save()
-      .then(function () {
-        //create duplicate user
-        User.create(userObject)
-          .catch(function (err) {
-            should.exist(err);
-            done();
-          });
-      });
-  });
-
-  it('should fail when saving without an email', function (done) {
-    testUser.email = '';
-    testUser.save()
-      .catch(function (err) {
+  it('should fail when saving a duplicate user', function(done) {
+    user.save(function() {
+      var userDup = new User(user);
+      userDup.save(function(err) {
         should.exist(err);
         done();
       });
+    });
   });
 
-  it("should authenticate user if password is valid", function () {
-    return testUser.authenticate('password').should.be.true;
+  it('should fail when saving without an email', function(done) {
+    user.email = '';
+    user.save(function(err) {
+      should.exist(err);
+      done();
+    });
   });
 
-  it("should not authenticate user if password is invalid", function () {
-    return testUser.authenticate('blah').should.not.be.true;
+  it("should authenticate user if password is valid", function() {
+    return user.authenticate('password').should.be.true;
+  });
+
+  it("should not authenticate user if password is invalid", function() {
+    return user.authenticate('blah').should.not.be.true;
   });
 });
