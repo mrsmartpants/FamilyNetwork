@@ -6,27 +6,22 @@
  * @method exports
  * @param {object} app the Express app object
  */
-module.exports = function (app) {
-  var models = app.get('models');
-  var User = models.User;
-
-  models.sequelize.sync({force: true})
-    .then(function () {
-      User
-        .bulkCreate([{
-          provider: 'local',
-          firstName: 'Ethan',
-          lastName: 'Veres',
-          email: 'ethanveres@gmail.com',
-          password: 'test'
-        },
-          {
-            provider: 'local',
-            firstName: 'test',
-            lastName: 'test',
-            email: 'test@test.com',
-            password: 'test'
-          }
-        ]);
-    });
-};
+var User = require('../app/models/User');
+console.log('populating db');
+User.find({}).remove(function () {
+  User.create({
+      provider: 'local',
+      name: 'Test User',
+      email: 'test@test.com',
+      password: 'test'
+    }, {
+      provider: 'local',
+      role: 'admin',
+      name: 'Admin',
+      email: 'admin@admin.com',
+      password: 'admin'
+    }, function () {
+      console.log('finished populating users');
+    }
+  );
+});

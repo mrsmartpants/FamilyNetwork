@@ -1,94 +1,142 @@
-var authService = require('../services/authorization');
-var config = require('../../config/environment');
+'use strict';
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var crypto = require('crypto');
+
+var UserSchema = new Schema({
+  name: String,
+  email: { type: String, lowercase: true },
+  role: {
+    type: String,
+    default: 'user'
+  },
+  hashedPassword: String,
+  provider: String,
+  salt: String
+});
 
 /**
- * Exposes the user model
- * @method exports
- * @param {object} sequelize
- * @param {object} DataTypes
+ * Virtuals
  */
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('User', {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
-      email: {
-        type: DataTypes.STRING,
-        unique: true,
-        validate: {
-          isEmail: true,
-          notEmpty: true
-        }
-      },
-      role: {
-        type: DataTypes.ENUM,
-        defaultValue: 'user',
-        values: config.userRoles
-      },
-      hashedPassword: DataTypes.STRING,
-      provider: DataTypes.STRING,
-      salt: DataTypes.STRING,
+UserSchema
+  .virtual('password')
+  .set(function(password) {
+    this._password = password;
+    this.salt = this.makeSalt();
+    this.hashedPassword = this.encryptPassword(password);
+  })
+  .get(function() {
+    return this._password;
+  });
 
-      //Virtuals
-      password: {
-        type: DataTypes.VIRTUAL,
-        /**
-         * Setter method for the virtual password column
-         * of the User database/model. When a user instance is saved
-         * the unencrypted password is taken to this method and
-         * saves the hashed password and salt to the database
-         * @method set
-         * @param {String} password
-         */
-        set: function (password) {
-          this.setDataValue('password', password);
-          this.setDataValue('salt', authService.makeSalt());
-          this.setDataValue('hashedPassword', authService.encryptPassword(password, this.getDataValue('salt')));
-        }
-        //validate: {
-        //  isLongEnough: function (val) {
-        //    if (val.length < 7) {
-        //      throw new Error("Please choose a longer password")
-        //    }
-        //  }
-        //}
-      },
-      profile: {
-        type: DataTypes.VIRTUAL,
-        /**
-         * Getter method for the virtual profile column
-         * of the User database/model
-         * @method get
-         * @return {object} profile - the user's public profile
-         */
-        get: function () {
-          return {
-            id: this.getDataValue('id'),
-            name: this.getDataValue('firstName') + ' ' + this.getDataValue('lastName'),
-            role: this.getDataValue('role')
-          }
-        }
-      }
-    },
-    {
-      freezeTableName: true,
-      timestamps: true,
-      instanceMethods: {
+// Public profile information
+UserSchema
+  .virtual('profile')
+  .get(function() {
+    return {
+      'name': this.name,
+      'role': this.role
+    };
+  });
 
-        /**
-         * Authenticate - check if the passwords are the same
-         * @method authenticate
-         * @param {String} password
-         * @return {Boolean} expression true if given password is the user's
-         */
-        authenticate: function(password) {
-          return authService.encryptPassword(password, this.getDataValue('salt')) === this.hashedPassword;
-        }
+// Non-sensitive info we'll be putting in the token
+UserSchema
+  .virtual('token')
+  .get(function() {
+    return {
+      '_id': this._id,
+      'role': this.role
+    };
+  });
+
+/**
+ * Validations
+ */
+
+// Validate empty email
+UserSchema
+  .path('email')
+  .validate(function(email) {
+    return email.length;
+  }, 'Email cannot be blank');
+
+// Validate empty password
+UserSchema
+  .path('hashedPassword')
+  .validate(function(hashedPassword) {
+    return hashedPassword.length;
+  }, 'Password cannot be blank');
+
+// Validate email is not taken
+UserSchema
+  .path('email')
+  .validate(function(value, respond) {
+    var self = this;
+    this.constructor.findOne({email: value}, function(err, user) {
+      if(err) throw err;
+      if(user) {
+        if(self.id === user.id) return respond(true);
+        return respond(false);
       }
-    }
-  );
+      respond(true);
+    });
+  }, 'The specified email address is already in use.');
+
+var validatePresenceOf = function(value) {
+  return value && value.length;
 };
+
+/**
+ * Pre-save hook
+ */
+UserSchema
+  .pre('save', function(next) {
+    if (!this.isNew) return next();
+
+    if (!validatePresenceOf(this.hashedPassword))
+      next(new Error('Invalid password'));
+    else
+      next();
+  });
+
+/**
+ * Methods
+ */
+UserSchema.methods = {
+  /**
+   * Authenticate - check if the passwords are the same
+   *
+   * @param {String} plainText
+   * @return {Boolean}
+   * @api public
+   */
+  authenticate: function(plainText) {
+    return this.encryptPassword(plainText) === this.hashedPassword;
+  },
+
+  /**
+   * Make salt
+   *
+   * @return {String}
+   * @api public
+   */
+  makeSalt: function() {
+    return crypto.randomBytes(16).toString('base64');
+  },
+
+  /**
+   * Encrypt password
+   *
+   * @param {String} password
+   * @return {String}
+   * @api public
+   */
+  encryptPassword: function(password) {
+    if (!password || !this.salt) return '';
+    var salt = new Buffer(this.salt, 'base64');
+    return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+  }
+};
+
+module.exports = mongoose.model('User', UserSchema);
