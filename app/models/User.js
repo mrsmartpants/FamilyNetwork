@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 
 var UserSchema = new Schema({
-  name: String,
   email: { type: String, lowercase: true },
   role: {
     type: String,
@@ -13,7 +12,18 @@ var UserSchema = new Schema({
   },
   hashedPassword: String,
   provider: String,
-  salt: String
+  salt: String,
+
+  //Profile related stuff
+  firstName: String,
+  lastName: String,
+  bio: String,
+  birthday: Date,
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other']
+  }
+
 });
 
 /**
@@ -36,6 +46,9 @@ UserSchema
   .get(function() {
     return {
       'name': this.name,
+      'birthday': this.birthday,
+      'bio': this.bio,
+      'gender': this.gender,
       'role': this.role
     };
   });
@@ -48,6 +61,12 @@ UserSchema
       '_id': this._id,
       'role': this.role
     };
+  });
+
+UserSchema
+  .virtual('name')
+  .get(function () {
+    return this.firstName + ' ' + this.lastName;
   });
 
 /**
