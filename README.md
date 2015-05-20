@@ -6,8 +6,7 @@ The Node API for a family social network
 ## Pre-requisites
 
 1. node.js: http://nodejs.org/
-1. MySQL: https://www.mysql.com/
-  1. Create tables familynetwork and familynetwork-test
+1. MongoDB: https://www.mongodb.org/
 2. (optional/preferred) Google Chrome browser
 
 ## Dev guide
