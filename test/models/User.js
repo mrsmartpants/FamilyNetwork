@@ -2,7 +2,7 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('../../app/models/user');
+var User = require('mongoose').model('User');
 
 var user = new User({
   provider: 'local',
